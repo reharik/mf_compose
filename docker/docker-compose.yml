@@ -1,0 +1,70 @@
+version: "2"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - LANG=en_US.UTF-8
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=methodfitness
+    ports:
+      - 5432:5432
+ 
+  eventstore:
+    image: eventstore/eventstore
+    container_name: eventstore
+    ports:
+      - 2113:2113
+      - 1113:1113
+    environment:
+      - ext-http-prefixes=http://*:2113/
+      - ext-ip="0.0.0.0"
+      - db=/data/db    
+      - log=/data/logs
+      - stats-period-sec=300
+      - run-projections=all
+
+#  front_end:
+#    extends:
+#      file: ../../mf_frontend/docker/docker-compose.yml
+#      service: mf_frontend
+#    container_name: mf_frontend
+
+  workflows:
+    depends_on:
+      - eventstore
+      - postgres
+      - data
+    extends:
+      file: ../../mf_workflows/docker/docker-compose.yml
+      service: workflows
+    container_name: mf_workflows
+
+  projections:
+    depends_on:
+      - eventstore
+      - postgres
+      - data
+    extends:
+      file: ../../mf_projections/docker/docker-compose.yml
+      service: projections
+    container_name: mf_projections
+
+  api:
+    depends_on:
+      - eventstore
+      - postgres
+      - data
+    extends:
+      file: ../../mf_api/docker/docker-compose.yml
+      service: api
+    container_name: mf_api
+
+  data:
+    depends_on:
+      - eventstore
+      - postgres
+    extends:
+      file: ../../mf_data/docker/docker-compose.yml
+      service: data
+    container_name: mf_data
