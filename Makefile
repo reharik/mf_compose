@@ -92,6 +92,10 @@ kill-workflows:
 	docker rm -vf mf_workflows 2>/dev/null || echo "No more containers to remove."
 	docker rmi workflows/dispatcher
 
+kill-api:
+	docker rm -vf mf_api 2>/dev/null || echo "No more containers to remove."
+	docker rmi api
+
 kill-eventstore:
 	docker rm -vf eventstore 2>/dev/null || echo "No more containers to remove."
 	docker rmi eventstore/eventstore
@@ -112,8 +116,12 @@ kill-all-data: kill-eventstore kill-postgres
 run:	docker-build-workflows docker-build-projections docker-build-api docker-build-data
 	docker-compose -f docker/docker-compose.yml up
 
-run-moodle:	docker-build-moodle
-	docker-compose -f docker/docker-compose-moodle.yml up
+run-no-data:	docker-build-workflows docker-build-projections docker-build-api
+	docker-compose -f docker/docker-compose-no-data.yml up
+
+run-api:	docker-build-api
+	cd ../mf_api && docker-compose -f docker/docker-compose.yml up
+	cd ../mf_compose
 
 ##################
 #Other Docker Helpers
