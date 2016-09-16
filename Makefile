@@ -26,26 +26,9 @@ clone-messagebinders:
 clone-domain:
 	git clone git@github.com:reharik/mf_domain.git ../mf_domain
 
-clone-eventDispatcher:
-	git clone git@github.com:reharik/core_eventDispatcher.git ../core_eventDispatcher
+clone-ges-eventsourcing:
+	git clone git@github.com:reharik/ges-eventsourcing.git ../ges-eventsourcing
 
-clone-eventHandlerBase:
-	git clone git@github.com:reharik/core_eventHandlerBase.git ../core_eventHandlerBase
-
-clone-eventRepository:
-	git clone git@github.com:reharik/core_eventRepository.git ../core_eventRepository
-
-clone-eventStore:
-	git clone git@github.com:reharik/core_eventStore.git ../core_eventStore
-
-clone-logger:
-	git clone git@github.com:reharik/core_logger.git ../core_logger
-
-clone-applicationFunctions:
-	git clone git@github.com:reharik/core_applicationFunctions.git ../core_applicationFunctions
-
-clone-readstoreRepository:
-	git clone git@github.com:reharik/core_readstoreRepository.git ../core_readstoreRepository
 
 clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data clone-messagebinders clone-domain
 
@@ -55,6 +38,10 @@ clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data
 
 docker-build-node:
 	docker build -t mf_node -f nodeDocker/Dockerfile ./nodeDocker
+
+docker-build-front-end:	docker-build-node
+	cd ../mf_frontend && $(MAKE) docker-build
+	cd ../mf_compose
 
 docker-build-workflows:	docker-build-node
 	cd ../mf_workflows && $(MAKE) docker-build
@@ -71,6 +58,10 @@ docker-build-api:	docker-build-node
 docker-build-data:	docker-build-node
 	cd ../mf_data && $(MAKE) docker-build
 	cd ../mf_compose
+
+docker-build-nginx:	docker-build-api docker-build-front-end
+	pwd
+	docker build -t mf_nginx_proxy -f docker/Dockerfile .
 
 ##################
 #kill
@@ -104,6 +95,10 @@ kill-postgres:
 	docker rm -vf postgres 2>/dev/null || echo "No more containers to remove."
 	docker rmi postgres
 
+kill-front-end:
+	docker rm -vf mf_frontend 2>/dev/null || echo "No more containers to remove."
+	docker rmi mf_frontend
+
 kill-orphans:
 	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
@@ -113,7 +108,7 @@ kill-all-data: kill-eventstore kill-postgres
 #run
 ##################
 
-run:	docker-build-workflows docker-build-projections docker-build-api docker-build-data
+run:	docker-build-workflows docker-build-projections docker-build-api docker-build-data docker-build-workflows docker-build-nginx
 	docker-compose -f docker/docker-compose.yml up
 
 run-no-data:	docker-build-workflows docker-build-projections docker-build-api
@@ -129,6 +124,39 @@ run-api:	docker-build-api
 
 exec:
 	docker exec -it $(con) bash
+
+##################
+#GIT Helpers
+##################
+
+get-statuses:
+	@echo ================COMPOSE==================
+	@git status
+	@echo ================FRONTEND==================
+	@cd ../mf_frontend && git status
+	@cd ../mf_compose
+	@echo ================WORKFLOW==================
+	@cd ../mf_workflows && git status
+	@cd ../mf_compose
+	@echo ================PROJECTIONS==================
+	@cd ../mf_projections && git status
+	@cd ../mf_compose
+	@echo ================API==================
+	@cd ../mf_api && git status
+	@cd ../mf_compose
+	@echo ================DATA==================
+	@cd ../mf_data && git status
+	@cd ../mf_compose
+	@echo ================MESSAGEBINDERS==================
+	@cd ../mf_messagebinders && git status
+	@cd ../mf_compose
+	@echo ================DOMAIN==================
+	@cd ../mf_domain && git status
+	@cd ../mf_compose
+	@echo ================GES-EVENTSOURCING==================
+	@cd ../ges-eventsourcing && git status
+	@cd ../mf_compose
+
 
 
 #.PHONY: clean install docker-build run docker-clean docker-exec
