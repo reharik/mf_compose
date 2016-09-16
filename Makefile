@@ -157,6 +157,34 @@ get-statuses:
 	@cd ../ges-eventsourcing && git status
 	@cd ../mf_compose
 
+pull-repos:
+	@echo ================COMPOSE==================
+	@git pull origin master
+	@echo ================FRONTEND==================
+	@cd ../mf_frontend && git pull origin newCss
+	@cd ../mf_compose
+	@echo ================WORKFLOW==================
+	@cd ../mf_workflows && git pull origin master
+	@cd ../mf_compose
+	@echo ================PROJECTIONS==================
+	@cd ../mf_projections && git pull origin master
+	@cd ../mf_compose
+	@echo ================API==================
+	@cd ../mf_api && git pull origin master
+	@cd ../mf_compose
+	@echo ================DATA==================
+	@cd ../mf_data && git pull origin master
+	@cd ../mf_compose
+	@echo ================MESSAGEBINDERS==================
+	@cd ../mf_messagebinders && git pull origin master
+	@cd ../mf_compose
+	@echo ================DOMAIN==================
+	@cd ../mf_domain && git pull origin master
+	@cd ../mf_compose
+	@echo ================GES-EVENTSOURCING==================
+	@cd ../ges-eventsourcing && git pull origin master
+	@cd ../mf_compose
+
 
 
 #.PHONY: clean install docker-build run docker-clean docker-exec
