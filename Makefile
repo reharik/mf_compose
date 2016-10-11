@@ -30,7 +30,7 @@ clone-ges-eventsourcing:
 	git clone git@github.com:reharik/ges-eventsourcing.git ../ges-eventsourcing
 
 
-clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data clone-messagebinders clone-domain
+clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data clone-messagebinders clone-domain clone-ges-eventsourcing
 
 ##################
 #build
