@@ -131,30 +131,30 @@ exec:
 
 get-statuses:
 	@echo ================COMPOSE==================
-	@git status
+	@git fetch origin && git status
 	@echo ================FRONTEND==================
-	@cd ../mf_frontend && git status
+	@cd ../mf_frontend && git fetch origin &&  git status
 	@cd ../mf_compose
 	@echo ================WORKFLOW==================
-	@cd ../mf_workflows && git status
+	@cd ../mf_workflows && git fetch origin && git status
 	@cd ../mf_compose
 	@echo ================PROJECTIONS==================
-	@cd ../mf_projections && git status
+	@cd ../mf_projections && git fetch origin && git status
 	@cd ../mf_compose
 	@echo ================API==================
-	@cd ../mf_api && git status
+	@cd ../mf_api && git fetch origin && git status
 	@cd ../mf_compose
 	@echo ================DATA==================
-	@cd ../mf_data && git status
+	@cd ../mf_data && git fetch origin && git status
 	@cd ../mf_compose
 	@echo ================MESSAGEBINDERS==================
-	@cd ../mf_messagebinders && git status
+	@cd ../mf_messagebinders && git fetch origin && git status
 	@cd ../mf_compose
 	@echo ================DOMAIN==================
-	@cd ../mf_domain && git status
+	@cd ../mf_domain && git fetch origin && git status
 	@cd ../mf_compose
 	@echo ================GES-EVENTSOURCING==================
-	@cd ../ges-eventsourcing && git status
+	@cd ../ges-eventsourcing && git fetch origin && git status
 	@cd ../mf_compose
 
 pull-repos:
