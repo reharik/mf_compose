@@ -161,7 +161,7 @@ pull-repos:
 	@echo ================COMPOSE==================
 	@git pull origin master
 	@echo ================FRONTEND==================
-	@cd ../mf_frontend && git pull origin newCss
+	@cd ../mf_frontend && git pull origin master
 	@cd ../mf_compose
 	@echo ================WORKFLOW==================
 	@cd ../mf_workflows && git pull origin master
