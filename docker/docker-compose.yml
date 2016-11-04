@@ -70,12 +70,3 @@ services:
       file: ../../mf_data/docker/docker-compose.yml
       service: data
     container_name: mf_data
-
-  nginx:
-    depends_on:
-      - front_end
-      - api
-    image: mf_nginx_proxy
-    ports:
-      - "3080:80"
-    container_name: mf_nginx_proxy

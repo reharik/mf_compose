@@ -108,7 +108,7 @@ kill-all-data: kill-eventstore kill-postgres
 #run
 ##################
 
-run:	docker-build-workflows docker-build-projections docker-build-api docker-build-data docker-build-workflows docker-build-nginx
+run:	docker-build-workflows docker-build-projections docker-build-api docker-build-data docker-build-workflows docker-build-front-end
 	docker-compose -f docker/docker-compose.yml up
 
 run-no-data:	docker-build-workflows docker-build-projections docker-build-api
