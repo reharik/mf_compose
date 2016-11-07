@@ -21,8 +21,8 @@ services:
       - ext-ip="0.0.0.0"
       - db=/data/db    
       - log=/data/logs
-      - stats-period-sec=300
-      - run-projections=all
+      - stats-period-sec=3000
+#      - run-projections=all
 
   front_end:
     depends_on:
