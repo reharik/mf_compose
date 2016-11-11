@@ -2,7 +2,7 @@ version: "2"
 services:
   postgres:
     image: postgres
-    container_name: mf_postgres
+    container_name: postgres
     environment:
       - LANG=en_US.UTF-8
       - POSTGRES_PASSWORD=password

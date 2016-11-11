@@ -71,6 +71,11 @@ kill-all:
 	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
 	docker rmi $$(docker images -a -q) || echo "No more containers to remove."
 
+kill-all-mf-but-node:
+	$$(docker ps -a | awk '{print $$NF}')
+	docker rmi $$(docker images | grep -e ^mf -e ^eventstore -e ^postgres | grep -v -e ^mf_node| awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+
 kill-all-but-bases:
 	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
 	docker rmi $$(docker images | grep -v -e ^mf -e ^nginx_container -e ^richarvey -e ^postgres -e ^mf_swagger_ui | awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
