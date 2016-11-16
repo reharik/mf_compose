@@ -86,11 +86,11 @@ kill-all-but-node:
 
 kill-workflows:
 	docker rm -vf mf_workflows 2>/dev/null || echo "No more containers to remove."
-	docker rmi workflows/dispatcher
+	docker rmi mf_workflows
 
 kill-api:
 	docker rm -vf mf_api 2>/dev/null || echo "No more containers to remove."
-	docker rmi api
+	docker rmi mf_api
 
 kill-eventstore:
 	docker rm -vf eventstore 2>/dev/null || echo "No more containers to remove."
