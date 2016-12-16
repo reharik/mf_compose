@@ -71,7 +71,7 @@ kill-all:
 	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
 	docker rmi $$(docker images -a -q) || echo "No more containers to remove."
 
-kill-all-mf-but-node:
+kill-all-mf-but-node: kill-workflows kill-api kill-eventstore kill-data kill-postgres kill-frontend kill-projections kill-orphans
 	$$(docker ps -a | awk '{print $$NF}')
 	docker rmi $$(docker images | grep -e ^mf -e ^eventstore -e ^postgres | grep -v -e ^mf_node| awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
 	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
@@ -87,6 +87,14 @@ kill-all-but-node:
 kill-workflows:
 	docker rm -vf mf_workflows 2>/dev/null || echo "No more containers to remove."
 	docker rmi mf_workflows
+
+kill-data:
+	docker rm -vf mf_data 2>/dev/null || echo "No more containers to remove."
+	docker rmi mf_data
+
+kill-projections:
+	docker rm -vf mf_projections 2>/dev/null || echo "No more containers to remove."
+	docker rmi mf_projections
 
 kill-api:
 	docker rm -vf mf_api 2>/dev/null || echo "No more containers to remove."
