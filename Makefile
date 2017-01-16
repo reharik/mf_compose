@@ -71,61 +71,64 @@ kill-all:
 	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
 	docker rmi $$(docker images -a -q) || echo "No more containers to remove."
 
-kill-all-mf-but-node: kill-workflows kill-api kill-eventstore kill-data kill-postgres kill-frontend kill-projections kill-orphans
-	$$(docker ps -a | awk '{print $$NF}')
-	docker rmi $$(docker images | grep -e ^mf -e ^eventstore -e ^postgres | grep -v -e ^mf_node| awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
-	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
-
-kill-all-but-bases:
-	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
-	docker rmi $$(docker images | grep -v -e ^mf -e ^nginx_container -e ^richarvey -e ^postgres -e ^mf_swagger_ui | awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
-
 kill-all-but-node:
 	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
 	docker rmi $$(docker images | grep -v -e ^mf_node | awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-workflows:
 	docker rm -vf mf_workflows 2>/dev/null || echo "No more containers to remove."
 	docker rmi mf_workflows
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-data:
 	docker rm -vf mf_data 2>/dev/null || echo "No more containers to remove."
 	docker rmi mf_data
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-projections:
 	docker rm -vf mf_projections 2>/dev/null || echo "No more containers to remove."
 	docker rmi mf_projections
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-api:
 	docker rm -vf mf_api 2>/dev/null || echo "No more containers to remove."
 	docker rmi mf_api
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-eventstore:
 	docker rm -vf eventstore 2>/dev/null || echo "No more containers to remove."
 	docker rmi eventstore/eventstore
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-postgres:
 	docker rm -vf postgres 2>/dev/null || echo "No more containers to remove."
 	docker rmi postgres
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-front-end:
 	docker rm -vf mf_frontend 2>/dev/null || echo "No more containers to remove."
 	docker rmi mf_frontend
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-orphans:
 	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-all-data: kill-eventstore kill-postgres
+	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 ##################
 #run
 ##################
 
-run:	docker-build-workflows docker-build-projections docker-build-api docker-build-data docker-build-workflows docker-build-front-end
+run:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end
 	docker-compose -f docker/docker-compose.yml up
 
-run-no-data:	docker-build-workflows docker-build-projections docker-build-api
-	docker-compose -f docker/docker-compose-no-data.yml up
+run-data:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-data
+	docker-compose -f docker/docker-compose-data.yml up
+
+run-seed:	docker-build-data
+	docker-compose -f docker/docker-compose-seed.yml up
 
 run-api:	docker-build-api
 	cd ../mf_api && docker-compose -f docker/docker-compose.yml up
