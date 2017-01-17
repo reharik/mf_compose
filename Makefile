@@ -115,7 +115,7 @@ kill-front-end:
 kill-orphans:
 	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
-kill-all-data: kill-eventstore kill-postgres
+kill-all-data: kill-eventstore kill-postgres kill-orphans
 
 ##################
 #run
