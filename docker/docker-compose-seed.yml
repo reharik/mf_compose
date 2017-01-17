@@ -1,0 +1,7 @@
+version: "2"
+services:
+  data:
+    extends:
+      file: ../../mf_data/docker/docker-compose.yml
+      service: data
+    container_name: mf_data
