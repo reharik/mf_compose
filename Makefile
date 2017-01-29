@@ -129,6 +129,12 @@ run-data:	docker-build-workflows docker-build-projections docker-build-api docke
 run-seed:	docker-build-data
 	docker-compose -f docker/docker-compose-seed.yml up
 
+run-logging:
+	docker-compose -f docker/docker-compose-logging.yml up
+
+run-swagger:
+	docker-compose -f docker/docker-compose-swagger-ui.yml up
+
 run-api:	docker-build-api
 	cd ../mf_api && docker-compose -f docker/docker-compose.yml up
 	cd ../mf_compose
