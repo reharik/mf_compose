@@ -1,12 +1,12 @@
 version: "2"
 services:
-  wk_elasticsearch:
+  mf_elasticsearch:
     image: elasticsearch:2.3
     ports:
         - "9200:9200"
-    container_name: wk_elasticsearch
+    container_name: mf_elasticsearch
 
-  wk_kibana:
+  mf_kibana:
     image: kibana:4.5.3
     ports:
       - 5601:5601
@@ -17,17 +17,12 @@ services:
     container_name: wk_kibana
     mem_limit: 5G
 
-  wk_logstash:
-    image: 999447569257.dkr.ecr.us-east-1.amazonaws.com/ml/logstash:5_v2
+  mf_logstash:
+    image: mf_logstash
     links:
-        - wk_elasticsearch:db
+        - mf_elasticsearch:db
     ports:
-      - "${FBPORT}:${FBPORT}"
       - "${WPORT}:${WPORT}"
-      - "${GPORT}:${GPORT}"
-      - "${GPORT}:${GPORT}/udp"
-    env_file:
-      - .env
     volumes:
       - "./logstash-logs:/var/log/logstash"
-    container_name: wk_logstash
+    container_name: mf_logstash
