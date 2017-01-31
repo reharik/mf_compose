@@ -12,17 +12,17 @@ services:
       - 5601:5601
     environment:
       NODE_ENV: "production"
-    env_file:
-      - .env
-    container_name: wk_kibana
+      ELASTICSEARCH_URL: "http://mf_elasticsearch:9200"
+    container_name: mf_kibana
     mem_limit: 5G
 
   mf_logstash:
     image: mf_logstash
-    links:
-        - mf_elasticsearch:db
     ports:
-      - "${WPORT}:${WPORT}"
+      - 13302:13302
+    links:
+      - mf_elasticsearch:db
+
     volumes:
       - "./logstash-logs:/var/log/logstash"
     container_name: mf_logstash
