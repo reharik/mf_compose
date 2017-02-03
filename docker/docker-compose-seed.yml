@@ -4,4 +4,6 @@ services:
     extends:
       file: ../../mf_data/docker/docker-compose.yml
       service: data
+    environment:
+      NODE_ENV: "dev"
     container_name: mf_data
