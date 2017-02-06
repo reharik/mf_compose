@@ -13,7 +13,7 @@ services:
       file: ../../mf_workflows/docker/docker-compose.yml
       service: workflows
     environment:
-      LOGGING_USE_JASON: "true"
+      ENV: "dev"
       LOGGING_LEVEL: silly
     container_name: mf_workflows
 
@@ -22,6 +22,7 @@ services:
       file: ../../mf_projections/docker/docker-compose.yml
       service: projections
     environment:
+      ENV: "dev"
       LOGGING_USE_JASON: "true"
       LOGGING_LEVEL: silly
     container_name: mf_projections
@@ -31,6 +32,7 @@ services:
       file: ../../mf_api/docker/docker-compose.yml
       service: api
     environment:
-      LOGGING_USE_JASON: "true"
+      ENV: "dev"
+      LOGGING_USE_JASON: "false"
       LOGGING_LEVEL: silly
     container_name: mf_api

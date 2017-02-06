@@ -22,7 +22,6 @@ services:
       - 13302:13302
     links:
       - mf_elasticsearch:db
-
     volumes:
       - "./logstash-logs:/var/log/logstash"
     container_name: mf_logstash
