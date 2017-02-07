@@ -128,7 +128,7 @@ run-data:	docker-build-workflows docker-build-projections docker-build-api docke
 run-seed:	docker-build-data
 	docker-compose -f docker/docker-compose-seed.yml up
 
-run-logging:	docker-build-logstash
+run-logging:
 	docker-compose -f docker/docker-compose-logging.yml up
 
 run-swagger:

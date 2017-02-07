@@ -12,19 +12,12 @@ services:
     extends:
       file: ../../mf_workflows/docker/docker-compose.yml
       service: workflows
-    environment:
-      ENV: "dev"
-      LOGGING_LEVEL: silly
     container_name: mf_workflows
 
   projections:
     extends:
       file: ../../mf_projections/docker/docker-compose.yml
       service: projections
-    environment:
-      ENV: "dev"
-      LOGGING_USE_JASON: "true"
-      LOGGING_LEVEL: silly
     container_name: mf_projections
 
   api:
@@ -33,6 +26,6 @@ services:
       service: api
     environment:
       ENV: "dev"
-      LOGGING_USE_JASON: "false"
+      LOGGING_USE_JASON: "true"
       LOGGING_LEVEL: silly
     container_name: mf_api
