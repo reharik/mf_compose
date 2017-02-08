@@ -111,7 +111,10 @@ kill-orphans:
 	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-all-non-data:  kill-workflows kill-data kill-projections kill-api kill-front-end
-	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+
+kill-all-backend:  kill-workflows kill-data kill-projections kill-api
+	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
 kill-all-data: kill-eventstore kill-postgres kill-orphans
 
