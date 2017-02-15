@@ -24,8 +24,4 @@ services:
     extends:
       file: ../../mf_api/docker/docker-compose.yml
       service: api
-    environment:
-      ENV: "dev"
-      LOGGING_USE_JASON: "true"
-      LOGGING_LEVEL: silly
     container_name: mf_api

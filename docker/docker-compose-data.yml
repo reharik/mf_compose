@@ -23,3 +23,32 @@ services:
       - log=/data/logs
       - stats-period-sec=3000000
 #      - run-projections=all
+
+  elasticsearch:
+    build: ../elasticsearch/
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    container_name: mf_elasticsearch
+  logstash:
+    build: ../logstash/
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./../logstash/config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elasticsearch
+    container_name: mf_logstash
+  kibana:
+    build: ../kibana/
+    volumes:
+      - ./../kibana/config/:/etc/kibana/
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    container_name: mf_kibana
+

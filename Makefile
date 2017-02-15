@@ -116,6 +116,14 @@ kill-all-non-data:  kill-workflows kill-data kill-projections kill-api kill-fron
 kill-all-backend:  kill-workflows kill-data kill-projections kill-api
 	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
+kill-logging:
+	- docker rm -vf mf_logstash 2>/dev/null || echo "No more containers to remove."
+	- docker rm -vf mf_kibana 2>/dev/null || echo "No more containers to remove."
+	- docker rm -vf mf_elasticsearch 2>/dev/null || echo "No more containers to remove."
+	- docker rmi docker_logstash
+	- docker rmi docker_kibana
+	- docker rmi docker_elasticsearch
+
 kill-all-data: kill-eventstore kill-postgres kill-orphans
 
 ##################
@@ -126,7 +134,7 @@ run:	docker-build-workflows docker-build-projections docker-build-api docker-bui
 	docker-compose -f docker/docker-compose.yml up
 
 run-data:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-data
-	docker-compose -f docker/docker-compose-data.yml up
+	docker-compose -f docker/docker-compose-data.yml up -d
 
 run-seed:	docker-build-data
 	docker-compose -f docker/docker-compose-seed.yml up
