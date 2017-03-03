@@ -134,7 +134,7 @@ run:	docker-build-workflows docker-build-projections docker-build-api docker-bui
 	docker-compose -f docker/docker-compose.yml up
 
 run-data:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-data
-	docker-compose -f docker/docker-compose-data.yml up -d
+	docker-compose -f docker/docker-compose-data.yml up
 
 #run-vmmax
 #	sudo sysctl -w vm.max_map_count=262144

@@ -1,5 +1,16 @@
 version: "2"
 services:
+  data:
+    extends:
+      file: ../../mf_data/docker/docker-compose.yml
+      service: data
+    depends_on:
+      - postgres
+      - eventstore
+    environment:
+      NODE_ENV: "dev"
+    container_name: mf_data
+
   postgres:
     image: postgres
     container_name: postgres
@@ -9,6 +20,9 @@ services:
       - POSTGRES_USER=methodfitness
     ports:
       - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
  
   eventstore:
     image: eventstore/eventstore
@@ -19,36 +33,45 @@ services:
     environment:
       - ext-http-prefixes=http://*:2113/
       - ext-ip="0.0.0.0"
-      - db=/data/db    
       - log=/data/logs
       - stats-period-sec=3000000
+    volumes:
+      - eventstore:/var/lib/eventstore
+
 #      - run-projections=all
 
-  elasticsearch:
-    build: ../elasticsearch/
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
-    container_name: mf_elasticsearch
-  logstash:
-    build: ../logstash/
-    command: -f /etc/logstash/conf.d/
-    volumes:
-      - ./../logstash/config:/etc/logstash/conf.d
-    ports:
-      - "5000:5000"
-    depends_on:
-      - elasticsearch
-    container_name: mf_logstash
-  kibana:
-    build: ../kibana/
-    volumes:
-      - ./../kibana/config/:/etc/kibana/
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    container_name: mf_kibana
-
+#  elasticsearch:
+#    build: ../elasticsearch/
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+#    environment:
+#      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+#    container_name: mf_elasticsearch
+#    volumes:
+#      - elastic:/var/lib/elastic
+#
+#  logstash:
+#    build: ../logstash/
+#    command: -f /etc/logstash/conf.d/
+#    volumes:
+#      - ./../logstash/config:/etc/logstash/conf.d
+#    ports:
+#      - "5000:5000"
+#    depends_on:
+#      - elasticsearch
+#    container_name: mf_logstash
+#  kibana:
+#    build: ../kibana/
+#    volumes:
+#      - ./../kibana/config/:/etc/kibana/
+#    ports:
+#      - "5601:5601"
+#    depends_on:
+#      - elasticsearch
+#    container_name: mf_kibana
+#
+volumes:
+  postgres_data:
+  eventstore:
+#  elastic:
