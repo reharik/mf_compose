@@ -1,4 +1,4 @@
-FROM node:7.5
+FROM node:latest
 
 ENV HOME /home/current
 RUN mkdir -p $HOME

@@ -98,6 +98,7 @@ kill-api:  kill-orphans
 kill-eventstore:  kill-orphans
 	- docker rm -vf eventstore 2>/dev/null || echo "No more containers to remove."
 	- docker rmi eventstore/eventstore
+	- docker volume rm docker_eventstore
 
 kill-postgres:  kill-orphans
 	- docker rm -vf postgres 2>/dev/null || echo "No more containers to remove."
@@ -130,10 +131,10 @@ kill-all-data: kill-eventstore kill-postgres kill-orphans
 #run
 ##################
 
-run:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end
+run:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-node
 	docker-compose -f docker/docker-compose.yml up
 
-run-data:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-data
+run-data:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-data docker-build-node
 	docker-compose -f docker/docker-compose-data.yml up
 
 #run-vmmax
