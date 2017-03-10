@@ -20,17 +20,11 @@ clone-api:
 clone-data:
 	git clone git@github.com:reharik/mf_data.git ../mf_data
 
-clone-messagebinders:
-	git clone git@github.com:reharik/mf_messagebinders.git ../mf_messagebinders
-
-clone-domain:
-	git clone git@github.com:reharik/mf_domain.git ../mf_domain
-
 clone-ges-eventsourcing:
 	git clone git@github.com:reharik/ges-eventsourcing.git ../ges-eventsourcing
 
 
-clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data clone-messagebinders clone-domain clone-ges-eventsourcing
+clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data clone-ges-eventsourcing
 
 ##################
 #build
@@ -71,13 +65,15 @@ docker-build-nginx:	docker-build-api docker-build-front-end
 ##################
 
 kill-all:
-	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
-	docker rmi $$(docker images -a -q) || echo "No more containers to remove."
+	- docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
+	- docker rmi $$(docker images -a -q) || echo "No more containers to remove."
+	- docker volume rm docker_eventstore
 
 kill-all-but-node:
-	docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
-	docker rmi $$(docker images | grep -v -e ^mf_node | awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
-	docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+	- docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
+	- docker rmi $$(docker images | grep -v -e ^mf_node | awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
+	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+	- docker volume rm docker_eventstore
 
 kill-workflows:  kill-orphans
 	- docker rm -vf mf_workflows 2>/dev/null || echo "No more containers to remove."
@@ -183,12 +179,6 @@ get-statuses:
 	@echo ================DATA==================
 	@cd ../mf_data && git fetch origin && git status
 	@cd ../mf_compose
-	@echo ================MESSAGEBINDERS==================
-	@cd ../mf_messagebinders && git fetch origin && git status
-	@cd ../mf_compose
-	@echo ================DOMAIN==================
-	@cd ../mf_domain && git fetch origin && git status
-	@cd ../mf_compose
 	@echo ================GES-EVENTSOURCING==================
 	@cd ../ges-eventsourcing && git fetch origin && git status
 	@cd ../mf_compose
@@ -210,12 +200,6 @@ pull-repos:
 	@cd ../mf_compose
 	@echo ================DATA==================
 	@cd ../mf_data && git pull origin master
-	@cd ../mf_compose
-	@echo ================MESSAGEBINDERS==================
-	@cd ../mf_messagebinders && git pull origin master
-	@cd ../mf_compose
-	@echo ================DOMAIN==================
-	@cd ../mf_domain && git pull origin master
 	@cd ../mf_compose
 	@echo ================GES-EVENTSOURCING==================
 	@cd ../ges-eventsourcing && git pull origin master
