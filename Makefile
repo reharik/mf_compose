@@ -99,6 +99,7 @@ kill-eventstore:  kill-orphans
 kill-postgres:  kill-orphans
 	- docker rm -vf postgres 2>/dev/null || echo "No more containers to remove."
 	- docker rmi postgres
+	- docker volume rm docker_postgres_data
 
 kill-front-end:  kill-orphans
 	- docker rm -vf mf_frontend 2>/dev/null || echo "No more containers to remove."
