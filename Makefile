@@ -30,32 +30,6 @@ clone-all: clone-frontend clone-workflows clone-projections clone-api clone-data
 #build
 ##################
 
-docker-build-node:
-	docker build -t mf_node -f nodeDocker/Dockerfile ./nodeDocker
-
-docker-build-front-end:	docker-build-node
-	cd ../mf_frontend && $(MAKE) docker-build
-	cd ../mf_compose
-
-docker-build-workflows:	docker-build-node
-	cd ../mf_workflows && $(MAKE) docker-build
-	cd ../mf_compose
-
-docker-build-projections:	docker-build-node
-	cd ../mf_projections && $(MAKE) docker-build
-	cd ../mf_compose
-
-docker-build-api:	docker-build-node
-	cd ../mf_api && $(MAKE) docker-build
-	cd ../mf_compose
-
-docker-build-data:	docker-build-node
-	cd ../mf_data && $(MAKE) docker-build
-	cd ../mf_compose
-
-docker-build-logstash:
-	docker build -t mf_logstash -f logstashDocker/Dockerfile ./logstashDocker
-
 docker-build-nginx:	docker-build-api docker-build-front-end
 	pwd
 	docker build -t mf_nginx_proxy -f docker/Dockerfile .
@@ -63,12 +37,6 @@ docker-build-nginx:	docker-build-api docker-build-front-end
 ##################
 #kill
 ##################
-
-kill-all:
-	- docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
-	- docker rmi $$(docker images -a -q) || echo "No more containers to remove."
-	- docker volume rm docker_eventstore
-
 kill-all-but-node:
 	- docker rm -vf $$(docker ps -a -q) 2>/dev/null || echo "No more containers to remove."
 	- docker rmi $$(docker images | grep -v -e ^mf_node | awk '{print $3}' | sed -n '1!p') 2>/dev/null || echo "No more containers to remove."
@@ -108,31 +76,27 @@ kill-front-end:  kill-orphans
 kill-orphans:
 	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
 
-kill-all-non-data:  kill-workflows kill-data kill-projections kill-api kill-front-end
-	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+down:
+	docker-compose -f docker/docker-compose.yml -p methodfit down
 
-kill-all-backend:  kill-workflows kill-data kill-projections kill-api
-	- docker rmi -f $$(docker images | grep "<none>" | awk "{print \$$3}")
+down-local:
+	docker-compose -f docker/docker-compose.yml -p methodfit down --rmi local --remove-orphans
 
-kill-logging:
-	- docker rm -vf mf_logstash 2>/dev/null || echo "No more containers to remove."
-	- docker rm -vf mf_kibana 2>/dev/null || echo "No more containers to remove."
-	- docker rm -vf mf_elasticsearch 2>/dev/null || echo "No more containers to remove."
-	- docker rmi docker_logstash
-	- docker rmi docker_kibana
-	- docker rmi docker_elasticsearch
+down-data:
+	docker-compose -f docker/docker-compose-data.yml -p methodfit down
 
-kill-all-data: kill-eventstore kill-postgres kill-orphans
+down-data-local:
+	docker-compose -f docker/docker-compose-data.yml -p methodfit down --rmi local --remove-orphans -v
 
 ##################
 #run
 ##################
 
-run:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-node
-	docker-compose -f docker/docker-compose.yml up
+run:
+	docker-compose -f docker/docker-compose.yml -p methodfit up
 
-run-data:	docker-build-workflows docker-build-projections docker-build-api docker-build-front-end docker-build-data docker-build-node
-	docker-compose -f docker/docker-compose-data.yml up
+run-data:
+	docker-compose -f docker/docker-compose-data.yml -p methodfit up
 
 #run-vmmax
 #	sudo sysctl -w vm.max_map_count=262144

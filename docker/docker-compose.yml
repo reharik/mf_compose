@@ -6,22 +6,18 @@ services:
     extends:
       file: ../../mf_frontend/docker/docker-compose.yml
       service: mf_frontend
-    container_name: mf_frontend
 
   workflows:
     extends:
       file: ../../mf_workflows/docker/docker-compose.yml
       service: workflows
-    container_name: mf_workflows
 
   projections:
     extends:
       file: ../../mf_projections/docker/docker-compose.yml
       service: projections
-    container_name: mf_projections
 
   api:
     extends:
       file: ../../mf_api/docker/docker-compose.yml
       service: api
-    container_name: mf_api

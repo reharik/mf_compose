@@ -1,32 +1,32 @@
 version: "2"
 services:
+  node:
+    build:
+      context: ../nodeDocker/
+      dockerfile: Dockerfile
   data:
+    build:
+      context: ../../mf_data/
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - node
+      - postgres
+      - eventstore
     extends:
       file: ../../mf_data/docker/docker-compose.yml
       service: data
-    depends_on:
-      - postgres
-      - eventstore
     environment:
       NODE_ENV: "dev"
-    container_name: mf_data
 
   postgres:
     image: postgres
-    container_name: postgres
-    environment:
-      - LANG=en_US.UTF-8
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=methodfitness
     ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
+      - 5400:5432
+    env_file:
+      - ./.env
  
   eventstore:
     image: eventstore/eventstore
-    container_name: eventstore
     ports:
       - 2113:2113
       - 1113:1113
